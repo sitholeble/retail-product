@@ -1,17 +1,16 @@
 package rt.service.product.retailproduct.controller;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rt.service.product.retailproduct.api.ProductServiceApi;
 import rt.service.product.retailproduct.entity.ProductEntity;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @RequestMapping(value = "/products")
@@ -33,5 +32,19 @@ public class ProductController {
 
         return ResponseEntity.status(HttpStatusCode.valueOf(201))
                 .body(product.getProductId());
+    }
+
+    @GetMapping(value = "/{product_id}/product",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    public ResponseEntity<ProductEntity> getProduct(@PathVariable("product_id") UUID productId) {
+
+        var product =
+                Optional.ofNullable(serviceApi.getProduct(productId));
+
+        return product.map(ResponseEntity::ok)
+                .orElseGet(
+                        () -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+                );
     }
 }

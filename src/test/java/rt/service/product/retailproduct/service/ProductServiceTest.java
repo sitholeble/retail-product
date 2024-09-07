@@ -9,6 +9,8 @@ import rt.service.product.retailproduct.entity.ProductEntity;
 import rt.service.product.retailproduct.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -53,6 +55,21 @@ public class ProductServiceTest {
                 .thenReturn(product);
 
         var response = service.createProduct(product);
+
+        assertNotNull(response);
+    }
+
+    @Test
+    void whenGetProduct_returnProduct() {
+        var productId = UUID.randomUUID();
+
+        when(repository.findById(any()))
+                .thenReturn(Optional.ofNullable(mock(ProductEntity.class)));
+
+        var response = service.getProduct(productId);
+
+        verify(repository, times(INVOKE_ONCE))
+                .findById(productId);
 
         assertNotNull(response);
     }

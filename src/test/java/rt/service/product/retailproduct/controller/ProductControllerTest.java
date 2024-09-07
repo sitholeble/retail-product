@@ -13,9 +13,11 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = ProductController.class)
 public class ProductControllerTest {
@@ -139,5 +141,47 @@ public class ProductControllerTest {
         var result = mockMvc.perform(request);
 
         result.andExpect(status().isCreated()).andReturn();
+    }
+
+    @Test
+    void whenGetProduct_andProductIdIsNull_throwNotFoundError() throws Exception {
+        //given
+        UUID productId = null;
+
+        var request = get("/products/{product_id}/product", productId)
+                .contentType("application/json");
+
+        //when
+        when(serviceApi.getProduct(productId))
+                .thenReturn(null);
+
+        var result = mockMvc.perform(request);
+
+        //then
+        result.andExpect(status().isNotFound()).andReturn();
+    }
+
+    @Test
+    void whenGetProduct_andProductIdIsValid_returnProduct() throws Exception {
+        //given
+        UUID productId = UUID.randomUUID();
+
+        var product = ProductEntity.builder()
+                .productId(productId)
+                .build();
+
+        var request = get("/products/{product_id}/product", productId)
+                .contentType("application/json");
+
+        //when
+        when(serviceApi.getProduct(productId))
+                .thenReturn(product);
+
+        var result = mockMvc.perform(request);
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.productId").value(productId.toString()))
+                .andReturn();
     }
 }
