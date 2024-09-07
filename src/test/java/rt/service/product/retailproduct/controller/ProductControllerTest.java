@@ -10,9 +10,11 @@ import rt.service.product.retailproduct.api.ProductServiceApi;
 import rt.service.product.retailproduct.entity.ProductEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -183,5 +185,18 @@ public class ProductControllerTest {
         result.andExpect(status().isOk())
                 .andExpect(jsonPath("$.productId").value(productId.toString()))
                 .andReturn();
+    }
+
+    @Test
+    void whenGetAllProducts_returnListOfProducts() throws Exception {
+        var request = get("/products")
+                .contentType("application/json");
+
+        when(serviceApi.getAllProducts())
+                .thenReturn(List.of(mock(ProductEntity.class)));
+
+        var response = mockMvc.perform(request);
+
+        response.andExpect(status().isOk()).andReturn();
     }
 }

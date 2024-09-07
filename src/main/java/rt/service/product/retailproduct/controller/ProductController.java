@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import rt.service.product.retailproduct.api.ProductServiceApi;
 import rt.service.product.retailproduct.entity.ProductEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -46,5 +47,12 @@ public class ProductController {
                 .orElseGet(
                         () -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()
                 );
+    }
+
+    @GetMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    List<ProductEntity> getAllProducts() {
+        return serviceApi.getAllProducts();
     }
 }

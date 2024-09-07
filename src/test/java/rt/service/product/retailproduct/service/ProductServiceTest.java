@@ -9,6 +9,7 @@ import rt.service.product.retailproduct.entity.ProductEntity;
 import rt.service.product.retailproduct.repository.ProductRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -70,6 +71,19 @@ public class ProductServiceTest {
 
         verify(repository, times(INVOKE_ONCE))
                 .findById(productId);
+
+        assertNotNull(response);
+    }
+
+    @Test
+    void whenGetAllProducts_returnListOfProducts() {
+        when(repository.findAll())
+                .thenReturn(List.of(mock(ProductEntity.class)));
+
+        var response = service.getAllProducts();
+
+        verify(repository, times(INVOKE_ONCE))
+                .findAll();
 
         assertNotNull(response);
     }
