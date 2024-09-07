@@ -55,4 +55,11 @@ public class ProductController {
     List<ProductEntity> getAllProducts() {
         return serviceApi.getAllProducts();
     }
+
+    @DeleteMapping(value = "/{product_id}/product",
+    consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    void deleteProduct(@PathVariable("product_id") UUID productId) {
+        serviceApi.deleteProduct(productId);
+    }
 }

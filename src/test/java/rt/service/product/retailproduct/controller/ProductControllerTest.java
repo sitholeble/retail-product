@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -28,6 +26,7 @@ public class ProductControllerTest {
     private static final String CATEGORY = "perishable";
     private static final String NAME = "cabbage";
     private static final BigDecimal PRICE = BigDecimal.TEN;
+    private static final int INVOKE_ONCE = 1;
 
     @MockBean
     private ProductServiceApi serviceApi;
@@ -198,5 +197,16 @@ public class ProductControllerTest {
         var response = mockMvc.perform(request);
 
         response.andExpect(status().isOk()).andReturn();
+    }
+
+    @Test
+    void whenDeleteProduct_confirmCorrectProductDeleted() throws Exception {
+        var productId = UUID.randomUUID();
+
+        mockMvc.perform(delete("/products/{product_id}/product", productId)
+                .contentType("application/json"));
+
+        verify(serviceApi, times(INVOKE_ONCE))
+                .deleteProduct(productId);
     }
 }

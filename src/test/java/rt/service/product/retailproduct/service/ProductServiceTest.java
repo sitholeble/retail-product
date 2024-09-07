@@ -87,4 +87,16 @@ public class ProductServiceTest {
 
         assertNotNull(response);
     }
+
+    @Test
+    void whenDeleteProduct_confirmCorrectProductDeleted() {
+        var productId = UUID.randomUUID();
+
+        doNothing().when(repository).deleteById(productId);
+
+        service.deleteProduct(productId);
+
+        verify(repository, times(INVOKE_ONCE))
+                .deleteById(productId);
+    }
 }
