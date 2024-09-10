@@ -35,9 +35,7 @@ public class ProductController {
                 .body(product.getProductId());
     }
 
-    @GetMapping(value = "/{product_id}/product",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping(value = "/{product_id}/product")
     public ResponseEntity<ProductEntity> getProduct(@PathVariable("product_id") UUID productId) {
 
         var product =
@@ -49,16 +47,12 @@ public class ProductController {
                 );
     }
 
-    @GetMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @GetMapping()
     List<ProductEntity> getAllProducts() {
         return serviceApi.getAllProducts();
     }
 
-    @DeleteMapping(value = "/{product_id}/product",
-    consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    @DeleteMapping(value = "/{product_id}/product")
     void deleteProduct(@PathVariable("product_id") UUID productId) {
         serviceApi.deleteProduct(productId);
     }
